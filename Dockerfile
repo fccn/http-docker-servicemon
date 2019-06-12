@@ -31,11 +31,15 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/re
 WORKDIR /app
 COPY ./src /app
 COPY monitor-docker.sh /monitor-docker.sh
+COPY test-monitor.sh /test-monitor.sh
+#store version info
+COPY VERSION /app/VERSION
 
 RUN chmod o+x /*.sh && \
-    pip install requests-unixsocket==0.1.5 && \
+#    pip install requests-unixsocket==0.1.5 && \
     pip install docker && \
 # Verify docker image
-    pip show requests-unixsocket | grep "0.1.5"
+    pip show docker | grep "docker"
+#    pip show requests-unixsocket | grep "0.1.5"
 
 ENTRYPOINT ["/monitor-docker.sh"]

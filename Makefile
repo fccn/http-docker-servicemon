@@ -35,6 +35,9 @@ dev-shell: image ## Run a shell in new container and attach source files
 run: image ## Run this image
 	docker run -i -t --rm --name "http_monitor" -p $(HOST_PORT):$(HOST_PORT) -v /var/run/docker.sock:/var/run/docker.sock $(APP_NAME)
 
+test: image ## Check if image was correctly built
+	docker run -i -t --rm --name "http_monitor_test" -v /var/run/docker.sock:/var/run/docker.sock --entrypoint="/test-monitor.sh" $(APP_NAME)
+
 release: build-nc publish ## Make a release by building and publishing the `{version}` and `latest` tagged containers to repository
 
 # Docker publish

@@ -4,6 +4,12 @@ import time
 import docker
 from docker_monitor import monitor_docker_service
 
+def print_message(service_name,msg_prefix):
+    (status, err_msg) = monitor_docker_service(service_name)
+    if msg_prefix != "":
+        err_msg = "%s\n%s" % (msg_prefix, err_msg)
+    print("%s: %s" % (status, err_msg))
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--slack_token', required=False, \
@@ -16,10 +22,13 @@ if __name__ == '__main__':
                         help="Periodical check. By seconds.", type=int)
     parser.add_argument('--msg_prefix', default = '', required=False, \
                         help="Slack message prefix.", type=str)
+    parser.add_argument('--test', default = '', required=False, \
+                        help="run a test and stop", type=str)
+
     l = parser.parse_args()
     check_interval = l.check_interval
     service_name = l.service
-
+    is_test_str = l.test
     #slack_channel = l.slack_channel
     #slack_token = l.slack_token
     msg_prefix = l.msg_prefix
@@ -34,19 +43,22 @@ if __name__ == '__main__':
     # TODO
     #slack_username = "@denny"
 
-    has_send_error_alert = False
-    while True:
-        (status, err_msg) = monitor_docker_service(service_name)
-        if msg_prefix != "":
-            err_msg = "%s\n%s" % (msg_prefix, err_msg)
-        print("%s: %s" % (status, err_msg))
-        # if status == "OK":
-        #     if has_send_error_alert is True:
-        #         # TODO write OK on page
-        #         has_send_error_alert = False
-        # else:
-        #     if has_send_error_alert is False:
-        #         # TODO write something else on page
-        #         # avoid send alerts over and over again
-        #         has_send_error_alert = True
-        time.sleep(check_interval)
+    if is_test_str == 'true' or  is_test_str == 'yes':
+        print_message(service_name,msg_prefix)
+    else:
+        has_send_error_alert = False
+        while True:
+            (status, err_msg) = monitor_docker_service(service_name)
+            if msg_prefix != "":
+                err_msg = "%s\n%s" % (msg_prefix, err_msg)
+            print("%s: %s" % (status, err_msg))
+            # if status == "OK":
+            #     if has_send_error_alert is True:
+            #         # TODO write OK on page
+            #         has_send_error_alert = False
+            # else:
+            #     if has_send_error_alert is False:
+            #         # TODO write something else on page
+            #         # avoid send alerts over and over again
+            #         has_send_error_alert = True
+            time.sleep(check_interval)

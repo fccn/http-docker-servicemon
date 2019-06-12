@@ -1,5 +1,7 @@
 # Docker service monitor
 
+[![Build Status](https://dev.azure.com/pcosta-fccn/Docker%20base%20images/_apis/build/status/fccn.http-docker-servicemon?branchName=master)](https://dev.azure.com/pcosta-fccn/Docker%20base%20images/_build/latest?definitionId=7&branchName=master)
+
 Simple HTTP server written in python that monitors the deployment of multiple instances of a service in a swarm. It checks if all instances of the service are properly running.
 
 It uses the [docker SDK for python](https://docker-py.readthedocs.io) to list the service tasks and check their state. The results are presented in a web page and are refreshed on a given timer.
