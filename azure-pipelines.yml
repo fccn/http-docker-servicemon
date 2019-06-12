@@ -16,7 +16,7 @@ variables:
 steps:
 - script: docker build -f Dockerfile -t $(image.name) .
   displayName: 'build image'
-- script: docker run -i -t --rm --name "http_monitor_test" -v /var/run/docker.sock:/var/run/docker.sock --entrypoint="/test-monitor.sh" $(image.name)
+- script: docker run -t --rm --name "http_monitor_test" -v /var/run/docker.sock:/var/run/docker.sock --entrypoint="/test-monitor.sh" $(image.name)
   displayName: 'test image'
 - script: echo "##vso[task.setvariable variable=APP_VERSION;]$(./version.sh))"
   displayName: 'set image version'
