@@ -28,3 +28,4 @@ steps:
     docker push $(dockerRepoId)/$(image.basename):latest
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'push image to dockerhub'
+  
