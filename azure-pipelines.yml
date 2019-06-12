@@ -1,0 +1,27 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  image.basename: 'http-docker-servicemon'
+  image.name: '$(image.basename):$(build.buildId)'
+
+steps:
+- script: docker build -f Dockerfile -t $(image.name) .
+  displayName: 'build image'
+- script: |
+    echo "##vso[task.setvariable variable=APP_VERSION;]$(./version.sh))"
+    docker login -u $(dockerId) -p $(dockerPassword)
+    docker tag $(image.name) $(dockerRepoId)/$(image.basename):$(APP_VERSION)
+    docker tag $(image.name) $(dockerRepoId)/$(image.basename):latest
+    docker push $(dockerRepoId)/$(image.basename):$(APP_VERSION)
+    docker push $(dockerRepoId)/$(image.basename):latest
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'push image to dockerhub'
