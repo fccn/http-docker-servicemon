@@ -17,8 +17,8 @@ steps:
 - script: docker build -f Dockerfile -t $(image.name) .
   displayName: 'build image'
 - script: |
-    chmod o+x version.sh
-    echo "##vso[task.setvariable variable=APP_VERSION;]$(./version.sh))"
+    echo "##vso[task.setvariable variable=APP_VERSION;]$(cat VERSION))"
+    echo version is $(APP_VERSION)
   displayName: 'set image version'
 - script: |
     echo "preparing version: $(APP_VERSION)"
